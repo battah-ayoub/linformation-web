@@ -1,112 +1,67 @@
+/*
 
-/**
-* We want to share this URL, you can change it
+    social media share 
+
+    whatssap : 
+        https://api.whatsapp.com/send?text=[post-title] [post-url]
+    facebook : 
+        https://www.facebook.com/sharer.php?u=[post-url]
+    twitter : 
+        https://twitter.com/share?url=[post-url]&text=[post-title]
+    Google+ :
+      https://plus.google.com/share?url=[post-url]
+    Pinterest :
+      https://pinterest.com/pin/create/bookmarklet/?media=[post-img]&url=[post-url]&is_video=[is_video]&description=[post-title]
+    LinkedIn:
+      https://www.linkedin.com/shareArticle?url=[post-url]&title=[post-title]
+    Tumblr: 
+    https://www.tumblr.com/share/link?url=[post-url]&name=[post-title]&description=[post-desc]
+    Email :
+        $email = 'mailto:?subject=' . $[post-title] . '&body=Check out this site: '. $[post-url] .'" title="Share by Email';
+
 */
-var shareUrl = 'https://belyash.github.io';
+const facebookBtn = document.querySelector(".facebook-btn");
+const twitterBtn = document.querySelector(".twitter-btn");
+const linkedinBtn = document.querySelector(".linkedin-btn");
+const instagramBtn = document.querySelector(".instagram-btn");
+const whatsappBtn = document.querySelector(".whatsapp-btn");
+const pinterestBtn = document.querySelector(".pinterest-btn");
+const emailBtn = document.querySelector(".email-btn");
 
 
-var SocialShares = {
-  fb: {
-    url: "https://graph.facebook.com/?id=",
-    callback: function (data) {
-      console.log("fb", data);
-      if (data && data.shares) {
-        this.count = data.shares;
-      } else {
-        this.count = 0;
-      }
-    },
-    share: "https://www.facebook.com/sharer/sharer.php?u="
-  },
-  vk: {
-    url: "https://vk.com/share.php?act=count&url=",
-    callback: function (data) {
-      // VK.com doesn't support callback parametr for JSONP
-      // This callback will never be called
-      console.log("vk", data);
-    },
-    share: "https://vk.com/share.php?url="
-  },
-  tw: {
-    url: "https://cdn.api.twitter.com/1/urls/count.json?url=",
-    callback: function (data) {
-      console.log("tw", data);
-      if (data && data.count) {
-        this.count = data.count;
-      } else {
-        this.count = 0;
-      }
-    },
-    share: "https://twitter.com/intent/tweet?url="
-  },
-  ln: {
-    url: "https://www.linkedin.com/countserv/count/share?format=jsonp&url=",
-    callback: function (data) {
-			console.log("ln", data);
-      if (data && data.count) {
-        this.count = data.count;
-      } else {
-        this.count = 0;
-      }
-    },
-    share: "https://www.linkedin.com/cws/share?url="
-  },
-  pt: {
-    url: "https://api.pinterest.com/v1/urls/count.json?url=",
-    callback: function (data) {
-			console.log("pt", data);
-      if (data && data.count) {
-        this.count = data.count;
-      } else {
-        this.count = 0;
-      }
-    },
-    // Have some trouble with this
-    share: "https://www.pinterest.com/pin/create/bookmarklet/?description=Vasiliy Lazarev&url="
-  },
+function init(){
+  const pinterestImg  = document.querySelector('.pinterest-imgs');
+  let postUrl   = encodeURI(document.location.href);
+  let postTitle = encodeURI("Hi evryone , please check this out: ");
+  let postImg   = encodeURI(pinterestImg.src) ;
+
+  facebookBtn.setAttribute(
+    "href",
+    `https://www.facebook.com/sharer.php?u=${postUrl}`
+  );
+  twitterBtn.setAttribute(
+    "href",
+    `https://twitter.com/share?url=${postUrl}&text=${postTitle}`
+  );
+  linkedinBtn.setAttribute(
+    "href",
+    `https://www.linkedin.com/shareArticle?url=${postUrl}&title=${postTitle}`
+  );
+  instagramBtn.setAttribute(
+    "href",
+    `https://www.instagram.com/sharer.php?u=${postUrl}`
+  );
+  whatsappBtn.setAttribute(
+    "href",
+    `https://api.whatsapp.com/send?text=${postTitle} ${postUrl}`
+  );
+  pinterestBtn.setAttribute(
+    "href",
+    `https://pinterest.com/pin/create/bookmarklet/?media=${postImg}&url=${postUrl}&description=${postTitle}`
+  );
+  emailBtn.setAttribute(
+    `$email = 'mailto:?subject=' . ${postTitle} . ${postUrl} .'" title="Share by Email';`
+  );
   
-};
-
-/**
-* VK.com doesn't support callback parameter for JSONP
-* VK.com wanna call VK.Share.count()
-*/
-var VK = VK || {};
-VK.Share = VK.Share || {};
-VK.Share.count = function (index, count) {
-  console.log("vk", count);
-  SocialShares.vk.count = count;
 }
-
-$(function () {
-  $('[data-social]').each(function () {
-    var $this = $(this),
-      social = $this.data('social'),
-      oSocial;
-
-    if (SocialShares.hasOwnProperty(social)) {
-      oSocial = SocialShares[social];
-
-      if (oSocial.url) {
-        $.getScript(
-          oSocial.url + shareUrl + "&callback=SocialShares." + social + ".callback",
-          function(data, textStatus, jqxhr) {
-            $this.attr("data-count", oSocial.count);
-          }
-        );
-      }
-      
-      if (oSocial.share) {
-        $this.on("click", function () {
-          window.open(
-            oSocial.share + shareUrl, 
-            '', 
-            'menubar=no,toolbar=no,resizable=yes' + 
-            ',scrollbars=yes' +
-            ',height=300,width=600'
-          );
-		    });
-      }
-    }
-  });
-});
+init();
